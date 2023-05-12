@@ -85,11 +85,13 @@ async def uploadMediaFiles(name, path, method, file_attr):
                     with open(compressed_path, 'rb') as compressed_file:
                         file_size_mb = os.path.getsize(compressed_path) / (1024 * 1024)
                         if file_size_mb < 50:
+                            await asyncio.sleep(5)
                             msg = await method(MY_ID, compressed_file, disable_notification=True)
                 else:
                     logging.error('Failed to compress PDF file: {}'.format(filename))
                     continue
             else:
+                await asyncio.sleep(5)
                 msg = await method(MY_ID, file, disable_notification=True)
             if file_size_mb < 50:
                 if file_attr == 'photo':
