@@ -40,7 +40,7 @@ from aiogram_broadcaster import MessageBroadcaster, TextBroadcaster
 # привязка по жанрам. есть, но очень кривой и медленный код. 
 # автообновление глав
 # aergsthydtg
-#
+# handler криво работает. 
 
 
 
@@ -417,21 +417,6 @@ async def get_link(message: types.Message):
        # print(user_list)
         await message.reply('Ссылку получил, спасибо!')
 '''
-
-
-
-
-@dp.message_handler(commands=['onelink'])
-async def get_link(message: types.Message):
-    await bot.send_message(message.from_user.id, text = 'Привет! Проверка функции автоматического добавления манхвы с мангалиба :) Присылай в ответ ссылку тайтла, который хочешь добавить в формате: https://mangalib.me/kod-giass/v5/c18?ui=156163&page=1. Пока только по одной ссылке за раз, к сожалению. ')
-    @dp.message_handler()
-    async def get_link(message: types.Message):
-        df.add_u_title_list(message.text)
-       # user_list.append(str(message.text))
-       # print(user_list)
-        await message.reply('Ссылку получил, спасибо!')
-
-
 
 
 @dp.callback_query_handler(text = 'start_modify_read')

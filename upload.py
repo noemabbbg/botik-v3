@@ -109,7 +109,11 @@ async def uploadMediaFiles(name, path, method, file_attr):
                         'Couldn\'t upload {}. Error is {}'.format(filename, e))
                 else:
                     filename = str(filename).replace('.pdf', '')
-                    df.add_chapters_to_storage(name, int(filename), file_id)
+                    try:
+                        df.add_chapters_to_storage(name, int(filename), file_id)
+                    except ValueError as e:
+                        print(f"Ошибка при вызове функции df.add_chapters_to_storage: {e}")
+
                     test_dict[filename] = file_id
                     f.write(filename+": '"+ file_id + "', " + "\n")
                 finally:
