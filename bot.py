@@ -1,38 +1,51 @@
-from ast import Call
 import asyncio
-from audioop import add
 import logging
 import random
-import aiogram
-import df
+from pathlib import Path
 from typing import List, Union
-from aiogram.dispatcher.handler import CancelHandler
-from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import ReplyKeyboardRemove, \
-    ReplyKeyboardMarkup, KeyboardButton, \
-    InlineKeyboardMarkup, InlineKeyboardButton, File
-import aiogram_broadcaster
+
+import aiogram
 from aiogram import Bot, types
-from aiogram.utils import executor
-from aiogram.utils.emoji import emojize
-from aiogram.dispatcher import Dispatcher
-from aiogram.types.message import ContentType
-from aiogram.utils.markdown import text, bold, italic, code, pre
-from aiogram.types import ParseMode, InputMediaPhoto, InputMediaVideo, ChatActions
-from aiogram.types import Message, CallbackQuery
-from config import TOKEN
-from aiogram.utils.helper import Helper, HelperMode, ListItem
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-import os
-from aiogram_broadcaster import TextBroadcaster
-from aiogram_broadcaster import MessageBroadcaster
-from aiogram.dispatcher import FSMContext
-from pathlib import Path
+from aiogram.dispatcher import Dispatcher, FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.dispatcher.handler import CancelHandler
+from aiogram.dispatcher.middlewares import BaseMiddleware
+from aiogram.types import (
+    CallbackQuery,
+    ChatActions,
+    ContentType,
+    File,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputMediaPhoto,
+    InputMediaVideo,
+    KeyboardButton,
+    Message,
+    ParseMode,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+)
+from aiogram.utils import emoji, executor, helper
+from aiogram.utils.markdown import bold, code, italic, pre, text
+from audioop import add
+from config import TOKEN
 import keyboard as kb
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import os
+from aiogram_broadcaster import MessageBroadcaster, TextBroadcaster
+
+
+
+# привязка по жанрам. есть, но очень кривой и медленный код. 
+# автообновление глав
+# aergsthydtg
+#
+
+
+
+
+
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
@@ -294,7 +307,7 @@ async def try1(message: types.message):
     genres_button = InlineKeyboardButton(text = 'жанры', callback_data='genres_list')
 
     start_kb.keyboard.insert(all_titles_button)
-    #start_kb.keyboard.insert(genres_button)
+    start_kb.keyboard.insert(genres_button)
 
 
 
@@ -361,17 +374,18 @@ async def genres_list(call: CallbackQuery):
     async def process_video_command(call: CallbackQuery):
         genre_name = call.data 
         accepted_manhwa = df.find_manhwa_genre(genre_name)
+        u_accepted_manhwa  = df.u_find_manhwa_genre(genre_name)
         manhwa_in_genre = InlineKeyboardMarkup(row_width=1)
         i = 0 
         while i<len(accepted_manhwa):
-            button =  InlineKeyboardButton(text = accepted_manhwa[i], callback_data = accepted_manhwa[i])
+            button =  InlineKeyboardButton(text = u_accepted_manhwa[i], callback_data = accepted_manhwa[i])
             manhwa_in_genre.insert(button)
             i+=1
         back_to_main_menu = InlineKeyboardButton(text = '🔙', callback_data='back_to_main_menu')
         manhwa_in_genre.insert(back_to_main_menu)
         await bot.delete_message(call.from_user.id, call.message.message_id)
-        await bot.send_message(call.from_user.id, text = 'доступные тайтлы: / ', reply_markup=manhwa_in_genre)
-####
+        await bot.send_message(call.from_user.id, text = 'доступные тайтлы: ', reply_markup=manhwa_in_genre)
+###
 @dp.callback_query_handler(text = 'start_read')
 async def start_reading(call: CallbackQuery):
   manhwa_name = df.get_selected_manhwa(call.from_user.id)

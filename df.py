@@ -61,12 +61,18 @@ def selected_chapter(user_id):
 
 
 # find по всем манхвам -> берем список жанров у манхвы и делаеим сравнение -> если совпадает добавляем.
+'''
 def available_genres():
     new = db['genres']
     genres = list(new.find({}))
     return [user['genre'] for user in genres]
+'''
+def available_genres():
+    new = db['smanhwa']
+    genres = list(new.find({}, {'genres':1, '_id':0}))
 
-print(available_genres())
+    return [genre for sublist in genres for genre in sublist['genres']]
+
 
 def available_manhwa():
     new = db['smanhwa']
@@ -140,11 +146,54 @@ def find_manhwa_genre(genre_name):
             #if manhwa_genre_list[i] == genre_name:
                # accepted_manhwa.append()
     
+
+def u_find_manhwa_genre(genre_name):
+    genre_db = db['genres']
+    manhwa_db = db['smanhwa']
+    genres = list(genre_db.find({}))
+    accepted_manhwa = []
+    manhwa_genres = list(manhwa_db.find({})) # передавать в какой то последовательности список манхв
    
+    genre_list = [user['genre'] for user in genres]
+    #manhwa_genre_list = [(manhwa_genres['genres'])]
+    manhwa_genre_list = [user['genres'] for user in manhwa_genres]
+    all_manhwa =  [user['u_name'] for user in manhwa_genres]
+    
+    k=0
+   
+    while k<len(all_manhwa):
+        manhwa_genres = list(manhwa_db.find({'u_name':all_manhwa[k]}))
+        
+        manhwa_name = []
+        for user in manhwa_genres:
+            manhwa_name.append(user['u_name'])
+
+       
+        #manhwa_name = [user['name'] for user in manhwa_genres]
+        #manhwa_genre_list = manhwa_genres[0]
+        nwe = []
+        for user in manhwa_genres:
+            nwe.append(user['genres'])
+        ab = (str(nwe).replace('[', '').replace(']', '').replace(', ', ' ').replace("'", ''))
+        nwe = ab.split()
+       
+        k+=1
+        i=0
+       
+        while i<len(nwe):
+            
+            if nwe[i] == genre_name:
+                
+                manhwa_name = str(manhwa_name).replace("['", "").replace("']", "")
+                accepted_manhwa.append((manhwa_name))
+            i+=1
+        
+
+    return accepted_manhwa 
     
 # сравниваю жанр манхвы со всеми жанрами.
-ik = find_manhwa_genre('один')
-
+ik = u_find_manhwa_genre('приключения')
+print(ik)
 
 
 

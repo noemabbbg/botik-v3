@@ -31,14 +31,14 @@ async def add_title_full(k):
         md = MangaDownloader(i)
         path=Path(__file__).parent
         await md.download(path=Path(__file__).parent)
-
-        images_to_pdf(P.path)
-       
-        await propsParse(i)
+        
+        
         if P.name in df.available_manhwa():
               await bot.send_message('133886300', text = 'манхва уже имеется, мы ее пропускаем')
               print('манхва уже имеется, мы ее пропускаем')
         else:
+            images_to_pdf(P.path)
+            await propsParse(i)
             await uploadMediaFiles(P.name , P.path, bot.send_document, 'document')
         
         
