@@ -3,13 +3,13 @@ import json
 import re
 from pathlib import Path
 import logging
-
+from botik import bot
 import aiohttp
 import requests
-
 logging.basicConfig(level=logging.INFO)
 
 class P: 
+    title_picture = ''
     path = ''
     name = ''
     u_name = ''
@@ -134,30 +134,7 @@ class MangaDownloader:
         for chapter in self.chapters:
             logging.info(f'Downloading {chapter["number"]} - {chapter["name"]}')
             await download_chapter(chapter)
+            await bot.send_message(133886300, text =f'{P.name}  -- Downloaded -- {chapter["number"]}')
             logging.info(f'Downloaded  {chapter["number"]} - {chapter["name"]}')
 
 from toPDF import images_to_pdf
-
-
-'''
-if __name__ == '__main__':
-    md = MangaDownloader("https://mangalib.me/qing-ni-lianai-tai-nanle/v1/c4?page=1")
-    path = path=Path(__file__).parent
-    asyncio.run(md.download(path=Path(__file__).parent))
-    
-    images_to_pdf(P.path)
-
-
-
-'''
-
-
-
-
-
-
-
-'https://mangalib.me/cold-human/v1/c4?page=1'
-
-
-'https://mangalib.me/kniga-receptov-v-epoxu-zombi-apokalipsisa/v1/c2?page=1'

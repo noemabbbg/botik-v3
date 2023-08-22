@@ -33,7 +33,7 @@ def add_manhwa_by_scraper(name, test_dict):
      manhwa_scrapped.insert_one({
         "name": name,
         "u_name": P.u_name,
-        "picture": "AgACAgIAAxkBAAEBdHxkXQx3skOe2qzCeECdQ-FRu154NgACgNMxG6ns6Eo9XR-yivabOAEAAwIAA3MAAy8E",
+        "picture": P.title_picture,
         "description": P.description,
         "number_of_chapters": P.number_of_chapters,
         "release_year":P.release_year ,
@@ -76,6 +76,13 @@ def available_genres():
 
 def available_manhwa():
     new = db['smanhwa']
+    manhwa = list(new.find({}))
+    def_list =  [user['name'] for user in manhwa]
+    u_list = [user['u_name'] for user in manhwa]
+    return def_list
+
+def user_bookmarks():   ####доделать как будет добавлено 
+    new = db['users']
     manhwa = list(new.find({}))
     def_list =  [user['name'] for user in manhwa]
     u_list = [user['u_name'] for user in manhwa]

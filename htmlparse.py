@@ -20,7 +20,7 @@ async def propsParse(url):
     description_tag = soup.find('meta', {'itemprop': 'description'})
 
     # Get media tags
-    media_tags = soup.find_all('a', {'class': 'media-tag-item'}, limit=3)
+    media_tags = soup.find_all(class_="media-tag-item", limit = 3)
 
     # Get release year, status, and number of chapters
     release_year_tag = soup.find('div', text='Год релиза').find_next_sibling()
@@ -30,7 +30,11 @@ async def propsParse(url):
     # Get main name
     main_name_tag = soup.find('div', {'class': 'media-name__main'})
 
-
+    title_picture_tag = soup.find('div', {'class': 'media-sidebar__cover paper'}).find('img')
+    if title_picture_tag:
+        title_picture_url = title_picture_tag.get('src')
+        P.title_picture = title_picture_url
+    print("Title Picture:", title_picture_url)
 
 
     if main_name_tag:
@@ -44,8 +48,9 @@ async def propsParse(url):
 
     if media_tags:
         print("Media Tags:")
+        k = []
         for tag in media_tags:
-            k = []
+            
             k.append(tag.text)
             
         P.genres = k
@@ -62,8 +67,7 @@ async def propsParse(url):
         P.number_of_chapters = chapters_tag.text
         print("Chapters:", chapters_tag.text)
 
-
-
+    
 
 
 
