@@ -274,6 +274,25 @@ def get_selected_manhwa(user_id):
     photo_new = str(photo).replace('{', '').replace('}', '').replace("'", '').replace(":", '').replace("selected_manhwa", '').replace(" ", '')
     return photo_new
 
+
+
+
+def add_chapter_by_u_name(u_name, chapter_number, chapter_data):
+    new = db["smanhwa"]
+    document = new.find_one({"u_name": u_name})
+    
+    if document:
+        chapters = document.get("chapters", {})
+        chapters[chapter_number] = chapter_data
+        new_number_of_chapters = int(document.get("number_of_chapters", 0)) + 1
+        new.update_one(
+            {"u_name": u_name},
+            {"$set": {"chapters": chapters, "number_of_chapters": str(new_number_of_chapters)}}
+        )
+        print("Chapter added successfully.")
+    else:
+        print(f"No document found with u_name: {u_name}")
+
 def add_chapters_to_storage(name, chapter_number, chapter_id): #либо хреначить по манхва ид либо по нейму  
     manhwa_chapters = db[f"{name}"]
     manhwa_chapters.insert_one({

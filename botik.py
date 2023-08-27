@@ -44,6 +44,11 @@ from test2 import *
 
 
 
+#уведомление о выходе новой главы 
+#закладки 
+#автообновление глав 
+
+
 
 
 bot = Bot(token=TOKEN)
@@ -100,21 +105,54 @@ class AddChaptersToMangaParse(StatesGroup):
     __id = State()
     url = State () 
 
-#@dp.message_handler(commands='addchap', state = None)
-@dp.callback_query_handler(text = 'addchap', state = None)
+@dp.message_handler(commands='addchap', state = None)
+#@dp.callback_query_handler(text = 'addchap', state = None)
 async def add_manhwa_name(message: types.message):
     await add_chapters_to_manhwa._id.set()
-    manhwa_ids =  added_manhwa =df.find_document_id(df.manhwa_data, {}, {'name':1, '_id':0, 'default_chap_name':1 })
+    manhwa_ids =  added_manhwa =df.find_document_id(df.manhwa_data, {}, {'u_name':1, '_id':0, 'default_chap_name':1 })
     k = len(manhwa_ids)
     manhwa_ids_array = []
-    await bot.send_message(message.from_user.id, text = 'выбери и напиши _id манхвы, к которой нужно будет добавить новые главы \n')
+    await bot.send_message(message.from_user.id, text = 'выбери и скопируй название манхвы, к которой нужно будет добавить новые главы \n')
     for i in range(0,k):
         manhwa_ids_array.append(str(manhwa_ids[i]).replace("'", ''))
         await bot.send_message(message.from_user.id, text = f'{manhwa_ids_array[i]}')
         i+=1
+'''
+@dp.message_handler(commands='addchap2', state = None)
+async def addchap2(message: types.message):
+    await bot.send_message(message.from_user.id, text = 'список добавленных тайтлов:Девушка рядом со мной слишком элегантна')
+    df.add_chapter_by_u_name(u_name, chapter_number, chapter_data)
+    pass
+'''
+class Testt(StatesGroup):
+    u_name = State() 
 
 
 
+class NameNewChap():
+    u_name = ''
+@dp.message_handler(commands='addnewchap', state = None)
+async def add_name(message: types.message):
+    await Testt.u_name.set()
+    await bot.send_message(message.from_user.id, text = "введи название добавленного тайтла, отправляй название, а потом главу пдфку" )
+
+    
+@dp.message_handler(state = Testt.u_name)
+async def add_name(message: types.message, state = Testt.u_name):
+    NameNewChap.u_name = message.text
+    await state.finish()
+
+
+@dp.message_handler(content_types=types.ContentType.DOCUMENT)
+async def handle_document(message: types.Message):
+    
+    document_file_id = message.document.file_id
+    print(message.document.file_id)
+    print(message.document.file_name)
+    chapter_number = message.document.file_name.replace('.pdf', '')
+    df.add_chapter_by_u_name(NameNewChap.u_name, chapter_number, document_file_id)
+
+ 
 @dp.message_handler(commands='cancel', state = add_new_manhwa )
 async def finish_state(message: types.message, state = add_new_manhwa):
     await state.finish()
@@ -131,6 +169,7 @@ async def finish_state(message: types.message,  state = add_chapters_to_manhwa):
 async def add_name(message: types.message, state = add_chapters_to_manhwa._id):
     async with state.proxy() as data:
         data['_id'] = message.text
+        print(data['_id'])
     await add_chapters_to_manhwa.next()
     await message.reply('выгрузи')
     await message.reply('введи (номер главы), которую ты загружаешь. если глав несколько - вводи самую раннюю главу и присылай главы строго по порядку (пофикшу немного позже, пока костыль)')
@@ -147,6 +186,7 @@ async def add_name(message: types.message, state = add_chapters_to_manhwa.filena
 
 @dp.message_handler(is_media_group=True, content_types=types.ContentType.ANY, state = add_chapters_to_manhwa.chapter_id)
 async def handle_albums(message: types.Message, album: List[types.Message], state = add_chapters_to_manhwa):
+    print( """This handler will receive a complete album of any type.""")
     """This handler will receive a complete album of any type."""
     media_group = types.MediaGroup()
     async with state.proxy() as data:
@@ -169,7 +209,8 @@ async def handle_albums(message: types.Message, album: List[types.Message], stat
                 await message.reply(str(data))
                 # здесь передаем в бд.
                 name = str(data['_id'])
-                df.add_chapters_to_storage(name, filename, file_id)
+                print('kjhgfcd')
+                df.add_chapter_by_u_name(name, filename, file_id)
             try:
                 # We can also add a caption to each file by specifying `"caption": "text"`
                 media_group.attach({"media": file_id, "type": obj.content_type})
