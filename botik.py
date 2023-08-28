@@ -378,7 +378,7 @@ async def try1(message: types.message):
     async def back_to_main_menu(call: CallbackQuery):
         await bot.delete_message(call.from_user.id, call.message.message_id)
     
-        await bot.send_message(call.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме! \n Канал с информацией и обновлениями бота - @manhwastorage', reply_markup=start_kb.keyboard)
+        await bot.send_message(call.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме! \nКанал с информацией и обновлениями бота - @manhwastorage', reply_markup=start_kb.keyboard)
 
 
 
@@ -395,7 +395,7 @@ async def try1(message: types.message):
         status = str(df.get_manhwa_state(call.data)).replace("'", " ")
         await bot.send_photo(call.from_user.id, 
         caption=f'*Описание: *{df.get_description(call.data)[0]} \n \n*Количество глав: * {number_of_chap}  \n*Год выпуска:* {release_year} \n\n *Жанры:* {genre} \n*Статус Тайтла: * {status}' ,photo=df.get_photo(call.data)[0], parse_mode="Markdown", reply_markup =kb.main_menu)
-    await bot.send_message(message.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме!', reply_markup = start_kb.keyboard)
+    await bot.send_message(message.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме! \nКанал с информацией и обновлениями бота - @manhwastorage', reply_markup = start_kb.keyboard)
 
 @dp.callback_query_handler(text ='genres_list')
 async def genres_list(call: CallbackQuery):
