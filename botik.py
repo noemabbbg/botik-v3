@@ -378,7 +378,7 @@ async def try1(message: types.message):
     async def back_to_main_menu(call: CallbackQuery):
         await bot.delete_message(call.from_user.id, call.message.message_id)
     
-        await bot.send_message(call.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме!', reply_markup=start_kb.keyboard)
+        await bot.send_message(call.from_user.id, text = 'Бот для чтения комиксов и манги в телеграмме! \n Канал с информацией и обновлениями бота - @manhwastorage', reply_markup=start_kb.keyboard)
 
 
 
